@@ -43,8 +43,9 @@ doc.Write(f)
 
 | Repo | What it is |
 |------|------------|
-| [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the writer — document/page tree/xref (`document.go`), vector graphics (`page.go`), text (`text.go`), font embedding (`embed.go`, `subset.go`), images (`image.go`) |
+| [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the writer — document/page tree/xref (`document.go`), vector graphics (`page.go`), text (`text.go`), font embedding (`embed.go`), images (`image.go`), the go-widgets/toolkit bridge (`widget.go`) |
 | [**docs**](https://github.com/go-pdfkit/docs) | this documentation site (MkDocs Material, versioned with mike) |
+| [**go-pdfkit.github.io**](https://github.com/go-pdfkit/go-pdfkit.github.io) | the org landing page (Hugo) |
 
 ## What it does
 
@@ -62,19 +63,25 @@ doc.Write(f)
 - **Images** — JPEG embedded directly (DCTDecode, no re-encoding); PNG and
   any `image.Image` rasterised as XObjects (FlateDecode) with an `/SMask`
   for alpha.
+- **Widget bridge** — `Page.AddWidget`/`Page.AddWidgetVector` "print" a
+  [go-widgets/toolkit](https://github.com/go-widgets/toolkit) widget tree onto
+  a page, as a rasterised image XObject or as PDF vector operators with
+  selectable text.
 - **Deterministic** — with the zero `Options`, output has no timestamps and
   a content-derived `/ID`, so identical inputs produce byte-identical PDFs.
 
 ## Honest about scope
 
-- CFF/OpenType fonts embed their **whole `CFF ` table** — charstring
-  subsetting is not yet implemented. TrueType fonts **are** fully
-  glyph-subsetted.
-- go-opentype exposes no raw table bytes, units-per-em, glyf/loca arrays or
-  a subsetting export, so pdfkit reparses the sfnt container it is handed
-  and implements TrueType subsetting itself.
-- Encryption, tagged PDF / PDF-A, forms and annotations are out of scope for
-  v0.1.
+- Both outline flavours are **subsetted**: TrueType `glyf` fonts and CFF/
+  OpenType fonts (charstring subsetting, glyph numbering preserved) alike. A
+  CID-keyed CFF or a CFF2 (variable) font cannot be charstring-subsetted by
+  the preserve-numbering path, so it falls back to embedding the whole
+  `CFF`/`CFF2` table.
+- All subsetting and font-descriptor metrics come straight from
+  [go-opentype](https://github.com/go-opentype/opentype); pdfkit keeps no
+  private sfnt re-parse or subsetter of its own.
+- Encryption, tagged PDF / PDF-A, forms and annotations are not yet
+  implemented.
 
 ## Principles
 
@@ -95,8 +102,8 @@ doc.Write(f)
 
 ## Status
 
-`pdfkit` v0.1.0: PDF 1.7 documents, vector graphics, embedded/subsetted
-TrueType and CFF fonts, shaped text, JPEG/PNG images. 100% statement
-coverage, `CGO_ENABLED=0`.
+`pdfkit` v0.4.0: PDF 1.7 documents, vector graphics, embedded/subsetted
+TrueType and CFF fonts, shaped text, JPEG/PNG images, and a go-widgets/toolkit
+widget bridge. 100% statement coverage, `CGO_ENABLED=0`.
 
 BSD-3-Clause.
