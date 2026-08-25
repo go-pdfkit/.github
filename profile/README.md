@@ -1,7 +1,8 @@
 <p align="center"><img src="https://raw.githubusercontent.com/go-pdfkit/.github/main/assets/banner.svg" alt="go-pdfkit" width="800"></p>
 
 <h1 align="center">go-pdfkit</h1>
-<p align="center"><strong>Pure-Go, CGO-free PDF 1.7 writer with a Go-idiomatic API.</strong></p>
+<p align="center"><strong>The whole of PDF in pure Go, with no C anywhere.</strong></p>
+<p align="center">Read a file, write one, rearrange it, draw it, read it back as words and pictures,<br>and edit it with other people — in a browser tab if you like.</p>
 
 <p align="center">
   🌐 <a href="https://go-pdfkit.github.io">Website</a> ·
@@ -17,76 +18,86 @@
 
 ---
 
-go-pdfkit builds **PDF 1.7** documents from Go: pages, vector graphics, and
-text set in embedded, subsetted fonts — with **zero C dependencies**
-anywhere in the stack (`CGO_ENABLED=0`). Fonts are parsed and shaped by
-[go-opentype](https://github.com/go-opentype/opentype), the same pure-Go
-text stack behind the [go-opentype](https://github.com/go-opentype) org and
-the Ruby port [go-ruby-prawn](https://github.com/go-ruby-prawn).
+go-pdfkit is the whole of PDF in Go with **zero C dependencies** anywhere
+(`CGO_ENABLED=0`), and every library here builds for `GOOS=js/wasm`. Fonts are
+parsed and shaped by [go-opentype](https://github.com/go-opentype/opentype);
+pages are rasterised by [go-gfx](https://github.com/go-gfx/gfx).
 
 ```go
-ttf, _ := os.ReadFile("font.ttf")
-font, _ := pdfkit.LoadFont(ttf)
+// Take three pages out of a report, turn one the right way up, stamp the lot.
+doc, _ := ops.Open(bytes)
+doc.Select("4-6")
+doc.SetRotation("2", 90)
+doc.Watermark("all", "DRAFT")
+out, _ := doc.Bytes()
 
-doc := pdfkit.New(pdfkit.Options{Title: "Hello"})
-p := doc.AddPage(pdfkit.A4)
+// Draw a page, and read one back.
+img, _ := render.Page(src, 1, render.Options{DPI: 150})
+text, _ := extract.Text(src, 1)
+```
 
-p.SetFont(font, 24)
-p.Text(pdfkit.Mm(20), p.Height()-pdfkit.Mm(20), "Hello, pdfkit")
-
-f, _ := os.Create("out.pdf")
-defer f.Close()
-doc.Write(f)
+```
+$ pdfops merge out.pdf a.pdf b.pdf
+$ pdfops nup -n 4 slides.pdf handout.pdf
+$ pdfops encrypt -user letmein -allow print,copy plain.pdf locked.pdf
+$ pdfops text -layout -pages 1 paper.pdf
 ```
 
 ## Repositories
 
 | Repo | What it is |
 |------|------------|
-| [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the writer — document/page tree/xref (`document.go`), vector graphics (`page.go`), text (`text.go`), font embedding (`embed.go`), images (`image.go`), the go-widgets/toolkit bridge (`widget.go`) |
-| [**docs**](https://github.com/go-pdfkit/docs) | this documentation site (MkDocs Material, versioned with mike) |
+| [**reader**](https://github.com/go-pdfkit/reader) | reads and writes the format itself: objects, xref tables *and* streams, object streams, repair, every filter, encryption to AES-256, content streams, the page tree — and a writer that produces the same bytes twice |
+| [**ops**](https://github.com/go-pdfkit/ops) | the verbs, and the `pdfops` command: merge, split, rotate, crop, n-up, booklet, watermark, stamp, sanitize, compress, encrypt, and reading a page back |
+| [**render**](https://github.com/go-pdfkit/render) | turns a page into pixels: paths, images, text in every font flavour, PDF functions, shadings and tiling patterns |
+| [**pdffont**](https://github.com/go-pdfkit/pdffont) | what a document says about a font — encodings, widths, and what text a code stands for |
+| [**extract**](https://github.com/go-pdfkit/extract) | reads a page back: the text with where it sits, and the pictures with the box each covers |
+| [**coedit**](https://github.com/go-pdfkit/coedit) | a PDF several people edit at once — the plan is shared, not the file |
+| [**app**](https://github.com/go-pdfkit/app) | a PDF workbench that runs in a browser tab and nowhere else |
+| [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the document builder: pages, vector graphics, and text in embedded subsetted fonts |
+| [**docs**](https://github.com/go-pdfkit/docs) | the documentation site (MkDocs Material, versioned with mike) |
 | [**go-pdfkit.github.io**](https://github.com/go-pdfkit/go-pdfkit.github.io) | the org landing page (Hugo) |
 
-## What it does
+## Measured against 118 863 real files
 
-- **Documents** — catalog, page tree, cross-reference table and trailer;
-  writes to any `io.Writer`; optional FlateDecode stream compression.
-- **Graphics** — paths, fill & stroke (nonzero and even-odd), DeviceGray/RGB/
-  CMYK colour, line width/cap/join/miter/dash, CTM transforms, clipping,
-  `q`/`Q` state, constant-alpha transparency via ExtGState.
-- **Text** — fonts embedded as **Type0 (Identity-H)** composite fonts with
-  glyph **subsetting**, a per-glyph `/W` width array and a `/ToUnicode` CMap
-  for copy/paste. TrueType `glyf` → **FontFile2 / CIDFontType2**; CFF/
-  OpenType → **FontFile3 / CIDFontType0**. Char/word spacing, leading,
-  render modes, greedy text wrapping, and an optional **shaped-text** API
-  (GSUB/GPOS via go-opentype) for Arabic/Indic/CJK.
-- **Images** — JPEG embedded directly (DCTDecode, no re-encoding); PNG and
-  any `image.Image` rasterised as XObjects (FlateDecode) with an `/SMask`
-  for alpha.
-- **Widget bridge** — `Page.AddWidget`/`Page.AddWidgetVector` "print" a
-  [go-widgets/toolkit](https://github.com/go-widgets/toolkit) widget tree onto
-  a page, as a rasterised image XObject or as PDF vector operators with
-  selectable text.
-- **Deterministic** — with the zero `Options`, output has no timestamps and
-  a content-derived `/ID`, so identical inputs produce byte-identical PDFs.
+Not against files written to pass a test. The corpus is arXiv's figures — from
+Matplotlib, Mathematica, pdfTeX, Ghostscript and Adobe — and every wave of work
+is checked by **hashing the pixels of every page before and after** and putting
+the biggest changes beside what the operating system's own renderer draws.
+
+| | |
+|---|---|
+| files that open | **118 833** of 118 835 (the rest are PNGs named `.pdf`) |
+| content operations read | 1 536 769 753 |
+| rewritten to an identical fingerprint | 118 833 of 118 833 |
+| compressed, page for page identical | 118 833 — 35.2 GB → 33.6 GB |
+| encrypted and decrypted both ways | 118 833 |
+| pages drawn, no panics | 4 108 |
+| pages read back as text | 121 946 — 34 million characters |
+| pictures located | 300 685 |
+
+That is what found a stroke that came out at **half its colour**, a font that
+took the dots off every *i*, a colour transform that turned every plot's paper
+**yellow**, and a pattern that rubbed the page out. Each is written up in the
+release notes of the library it was found in.
 
 ## Honest about scope
 
-- Both outline flavours are **subsetted**: TrueType `glyf` fonts and CFF/
-  OpenType fonts (charstring subsetting, glyph numbering preserved) alike. A
-  CID-keyed CFF or a CFF2 (variable) font cannot be charstring-subsetted by
-  the preserve-numbering path, so it falls back to embedding the whole
-  `CFF`/`CFF2` table.
-- All subsetting and font-descriptor metrics come straight from
-  [go-opentype](https://github.com/go-opentype/opentype); pdfkit keeps no
-  private sfnt re-parse or subsetter of its own.
-- Encryption, tagged PDF / PDF-A, forms and annotations are not yet
-  implemented.
+- Mesh shadings (types 4–7) and the standard fourteen faces are not drawn yet:
+  the corpus holds 569 mesh shadings against 25 512 axial and radial ones.
+- A page whose text the document gives **no way to read** — a Type 3 dvips
+  font with no `/ToUnicode`, whose glyphs are called `a1` — comes back marked
+  unreadable rather than guessed at. That is 1.89% of runs.
+- Eight of 14 614 embedded Type 1 programs have a private half that decrypts
+  cleanly for eighty bytes and then does not: one byte of each was altered
+  before it was embedded, and no reader can recover that.
+- Tagged PDF and PDF/A, forms and interactive annotations are not implemented.
 
 ## Principles
 
 - **Pure Go, zero cgo, zero C dependencies.** No bundled `libpoppler`,
-  `libharfbuzz` or `libfreetype` — cross-compiles anywhere Go runs.
+  `libharfbuzz` or `libfreetype` — cross-compiles anywhere Go runs, and all of
+  it runs in a browser tab.
 - **Built on go-opentype**, not a second font stack: sfnt parsing and
   complex-script shaping (GSUB/GPOS) come from
   [go-opentype/opentype](https://github.com/go-opentype/opentype), the same
@@ -102,8 +113,9 @@ doc.Write(f)
 
 ## Status
 
-`pdfkit` v0.4.0: PDF 1.7 documents, vector graphics, embedded/subsetted
-TrueType and CFF fonts, shaped text, JPEG/PNG images, and a go-widgets/toolkit
-widget bridge. 100% statement coverage, `CGO_ENABLED=0`.
+Every library here is released, runs at **100% statement coverage** including
+the branches that report a file saying something it should not, and builds for
+the six 64-bit architectures the fleet targets plus `js/wasm`, macOS and
+Windows.
 
 BSD-3-Clause.
