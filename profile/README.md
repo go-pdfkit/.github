@@ -49,7 +49,7 @@ $ pdfops text -layout -pages 1 paper.pdf
 |------|------------|
 | [**reader**](https://github.com/go-pdfkit/reader) | reads and writes the format itself: objects, xref tables *and* streams, object streams, repair, every filter, encryption to AES-256, content streams, the page tree — and a writer that produces the same bytes twice |
 | [**ops**](https://github.com/go-pdfkit/ops) | the verbs, and the `pdfops` command: merge, split, rotate, crop, n-up, booklet, watermark, stamp, sanitize, compress, encrypt, and reading a page back |
-| [**render**](https://github.com/go-pdfkit/render) | turns a page into pixels: paths, images, text in every font flavour, PDF functions, shadings and tiling patterns |
+| [**render**](https://github.com/go-pdfkit/render) | turns a page into pixels: paths, images, text in every font flavour, PDF functions, all seven shadings and tiling patterns |
 | [**pdffont**](https://github.com/go-pdfkit/pdffont) | what a document says about a font — encodings, widths, and what text a code stands for |
 | [**extract**](https://github.com/go-pdfkit/extract) | reads a page back: the text with where it sits, and the pictures with the box each covers |
 | [**coedit**](https://github.com/go-pdfkit/coedit) | a PDF several people edit at once — the plan is shared, not the file |
@@ -78,13 +78,16 @@ the biggest changes beside what the operating system's own renderer draws.
 
 That is what found a stroke that came out at **half its colour**, a font that
 took the dots off every *i*, a colour transform that turned every plot's paper
-**yellow**, and a pattern that rubbed the page out. Each is written up in the
-release notes of the library it was found in.
+**yellow**, a pattern that rubbed the page out, and every gradient inside a
+figure landing **in the corner of the page** rather than on the panel it was
+meant to fill. Each is written up in the release notes of the library it was
+found in.
 
 ## Honest about scope
 
-- Mesh shadings (types 4–7) and the standard fourteen faces are not drawn yet:
-  the corpus holds 569 mesh shadings against 25 512 axial and radial ones.
+- An ExtGState **soft mask** — a luminosity mask, the way Illustrator writes a
+  faded surface — is not applied, so a page that uses one comes out with that
+  part drawn at full strength. Constant alpha, `/ca` and `/CA`, is honoured.
 - A page whose text the document gives **no way to read** — a Type 3 dvips
   font with no `/ToUnicode`, whose glyphs are called `a1` — comes back marked
   unreadable rather than guessed at. That is 1.89% of runs.
