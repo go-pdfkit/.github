@@ -3,6 +3,12 @@
   "extends": ["config:recommended", ":semanticCommits"],
   "packageRules": [
     {"description": "Auto-merge non-breaking Go updates", "matchManagers": ["gomod"], "matchUpdateTypes": ["minor", "patch"], "automerge": true},
+    {
+      "description": "Never auto-merge the Go toolchain. A library that breaks is one library; a toolchain that breaks is every architecture at once, and one of them is broken today — go1.27.0 miscompiles on loong64 (golang/go#81000, bisected on real hardware to 3fdac6780b). The bump is still proposed, and a person still looks at it.",
+      "matchManagers": ["gomod", "github-actions"],
+      "matchDepNames": ["go"],
+      "automerge": false
+    },
     {"description": "Group GitHub Actions updates", "matchManagers": ["github-actions"], "groupName": "github-actions", "automerge": true}
   ]
 }
