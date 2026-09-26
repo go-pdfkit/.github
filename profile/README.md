@@ -99,7 +99,13 @@ found in.
 - Eight of 14 614 embedded Type 1 programs have a private half that decrypts
   cleanly for eighty bytes and then does not: one byte of each was altered
   before it was embedded, and no reader can recover that.
-- Tagged PDF and PDF/A, forms and interactive annotations are not implemented.
+- **PDF/A** is not implemented: nothing here validates a file against it or
+  claims conformance to it.
+- A **structure tree** — the reading order a screen reader follows — is
+  preserved: `ops` rebuilds it element by element around the pages that survive
+  an operation, and hands out fresh numbers, because every part of it points
+  into the document and none of it can be copied across. Nothing here *creates*
+  one, so a document that arrives untagged leaves untagged.
 
 ## Principles
 
