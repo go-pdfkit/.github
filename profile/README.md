@@ -55,6 +55,11 @@ $ pdfops text -layout -pages 1 paper.pdf
 | [**coedit**](https://github.com/go-pdfkit/coedit) | a PDF several people edit at once — the plan is shared, not the file |
 | [**app**](https://github.com/go-pdfkit/app) | a PDF workbench that runs in a browser tab and nowhere else |
 | [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the document builder: pages, vector graphics, and text in embedded subsetted fonts |
+| [**forms**](https://github.com/go-pdfkit/forms) | read, fill and flatten an AcroForm — the interactive layer a viewer draws on top of the page |
+| [**xfa**](https://github.com/go-pdfkit/xfa) | the OTHER form format: Adobe XFA, where the pages are a placeholder and the document is XML |
+| [**html2pdf**](https://github.com/go-pdfkit/html2pdf) | static HTML to VECTOR PDF, driven by go-webengine's layout tree and pdfkit's writer |
+| [**latex**](https://github.com/go-pdfkit/latex) | the other direction: reconstruct LaTeX source from a PDF |
+| [**conformance**](https://github.com/go-pdfkit/conformance) | judges all of the above against implementations that are not ours, over corpora of real PDFs |
 | [**docs**](https://github.com/go-pdfkit/docs) | the documentation site (MkDocs Material, versioned with mike) |
 | [**go-pdfkit.github.io**](https://github.com/go-pdfkit/go-pdfkit.github.io) | the org landing page (Hugo) |
 
