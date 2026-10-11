@@ -48,7 +48,7 @@ $ pdfops text -layout -pages 1 paper.pdf
 | Repo | What it is |
 |------|------------|
 | [**reader**](https://github.com/go-pdfkit/reader) | reads and writes the format itself: objects, xref tables *and* streams, object streams, repair, every filter, encryption to AES-256, content streams, the page tree — and a writer that produces the same bytes twice |
-| [**ops**](https://github.com/go-pdfkit/ops) | the verbs, and the `pdfops` command: merge, split, rotate, crop, n-up, booklet, poster, divide, duplex, watermark, stamp, outline, metadata, attachments, sanitize, compress, encrypt, and reading a page back |
+| [**ops**](https://github.com/go-pdfkit/ops) | the verbs, and the `pdfops` command — everything you do to a PDF you already have: its pages, the marks on them, what the file says about itself, its forms, the files it carries, and its locks. `pdfops --help` is the list, and is always the current one |
 | [**render**](https://github.com/go-pdfkit/render) | turns a page into pixels: paths, images, text in every font flavour, PDF functions, all seven shadings and tiling patterns |
 | [**convert**](https://github.com/go-pdfkit/convert) | pictures, SVG and comic archives into a PDF, and a PDF back out — PNG, JPEG, GIF, BMP, TIFF, WebP in; PNG, JPEG, GIF, BMP, TIFF out |
 | [**pdffont**](https://github.com/go-pdfkit/pdffont) | what a document says about a font — encodings, widths, and what text a code stands for |
