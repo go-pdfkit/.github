@@ -52,7 +52,8 @@ $ pdfops text -layout -pages 1 paper.pdf
 | [**render**](https://github.com/go-pdfkit/render) | turns a page into pixels: paths, images, text in every font flavour, PDF functions, all seven shadings and tiling patterns |
 | [**convert**](https://github.com/go-pdfkit/convert) | pictures, SVG and comic archives into a PDF, and a PDF back out — PNG, JPEG, GIF, BMP, TIFF, WebP in; PNG, JPEG, GIF, BMP, TIFF out |
 | [**pdffont**](https://github.com/go-pdfkit/pdffont) | what a document says about a font — encodings, widths, and what text a code stands for |
-| [**extract**](https://github.com/go-pdfkit/extract) | reads a page back: the text with where it sits, and the pictures with the box each covers |
+| [**extract**](https://github.com/go-pdfkit/extract) | reads a page back: the text with where it sits, the pictures with the box each covers, and the grids its text lines up into |
+| [**document**](https://github.com/go-pdfkit/document) | reads a PDF back as a DOCUMENT rather than as text — headings, paragraphs, lists and tables, into the richdoc model, so Markdown, reST and HTML come out through code the fleet already has |
 | [**coedit**](https://github.com/go-pdfkit/coedit) | a PDF several people edit at once — the plan is shared, not the file |
 | [**app**](https://github.com/go-pdfkit/app) | a PDF workbench that runs in a browser tab and nowhere else |
 | [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the document builder: pages, vector graphics, and text in embedded subsetted fonts |
