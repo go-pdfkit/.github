@@ -61,6 +61,7 @@ $ pdfops text -layout -pages 1 paper.pdf
 | [**xfa**](https://github.com/go-pdfkit/xfa) | the OTHER form format: Adobe XFA, where the pages are a placeholder and the document is XML |
 | [**html2pdf**](https://github.com/go-pdfkit/html2pdf) | static HTML to VECTOR PDF, driven by go-webengine's layout tree and pdfkit's writer |
 | [**latex**](https://github.com/go-pdfkit/latex) | the other direction: reconstruct LaTeX source from a PDF |
+| [**doc2pdf**](https://github.com/go-pdfkit/doc2pdf) | any document to PDF from a shell: one command over the converters above, so a file of whatever kind becomes a PDF without choosing which library does it |
 | [**conformance**](https://github.com/go-pdfkit/conformance) | judges all of the above against implementations that are not ours, over corpora of real PDFs |
 | [**docs**](https://github.com/go-pdfkit/docs) | the documentation site (MkDocs Material, versioned with mike) |
 | [**go-pdfkit.github.io**](https://github.com/go-pdfkit/go-pdfkit.github.io) | the org landing page (Hugo) |
