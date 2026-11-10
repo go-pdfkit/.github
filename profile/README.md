@@ -55,7 +55,7 @@ $ pdfops text -layout -pages 1 paper.pdf
 | [**extract**](https://github.com/go-pdfkit/extract) | reads a page back: the text with where it sits, the pictures with the box each covers, and the grids its text lines up into |
 | [**document**](https://github.com/go-pdfkit/document) | reads a PDF back as a DOCUMENT rather than as text — headings, paragraphs, lists and tables, into the richdoc model, so Markdown, reST and HTML come out through code the fleet already has |
 | [**coedit**](https://github.com/go-pdfkit/coedit) | a PDF several people edit at once — the plan is shared, not the file |
-| [**app**](https://github.com/go-pdfkit/app) | a PDF workbench that runs in a browser tab and nowhere else |
+| [**playground**](https://github.com/go-pdfkit/playground) | a PDF workbench that runs in a browser tab and nowhere else |
 | [**pdfkit**](https://github.com/go-pdfkit/pdfkit) | the document builder: pages, vector graphics, and text in embedded subsetted fonts |
 | [**forms**](https://github.com/go-pdfkit/forms) | read, fill and flatten an AcroForm — the interactive layer a viewer draws on top of the page |
 | [**xfa**](https://github.com/go-pdfkit/xfa) | the OTHER form format: Adobe XFA, where the pages are a placeholder and the document is XML |
